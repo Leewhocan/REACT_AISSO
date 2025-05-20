@@ -1,0 +1,26 @@
+.buttonsContainer {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.loginButton {
+  background-color: #1890ff;
+  border-color: #1890ff;
+  min-width: 120px;
+}
+
+.loginButton:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
+
+.authButton {
+  min-width: 120px;
+  border-color: #d9d9d9;
+}
+
+.authButton:hover {
+  color: #1890ff;
+  border-color: #1890ff;
+}

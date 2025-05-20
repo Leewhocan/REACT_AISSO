@@ -1,0 +1,106 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  height: 64px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+
+  .logoLink {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+
+  .logoIcon {
+    font-size: 28px;
+    color: #1890ff;
+    margin-right: 12px;
+  }
+
+  .logoText {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1890ff;
+    letter-spacing: 0.5px;
+  }
+}
+
+.navSection {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  .contractButton {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    height: 40px;
+    padding: 0 16px;
+    background: linear-gradient(90deg, #1890ff, #096dd9);
+    border: none;
+    transition: all 0.3s;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
+    }
+  }
+
+  .profileTrigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 20px;
+    transition: all 0.3s;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.04);
+    }
+  }
+
+  .avatar {
+    background-color: #f56a00;
+  }
+
+  .userName {
+    font-weight: 500;
+    color: #333;
+  }
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  color: inherit;
+  transition: all 0.2s;
+
+  &:hover {
+    background: #f5f5f5;
+    color: #1890ff;
+  }
+}

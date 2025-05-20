@@ -1,0 +1,30 @@
+.buttonsContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.nextButton {
+  min-width: 120px;
+  margin-left: auto;
+  background: #1890ff;
+  border-color: #1890ff;
+  &:hover {
+    background: #40a9ff;
+    border-color: #40a9ff;
+  }
+}
+
+.prevButton {
+  min-width: 120px;
+  background: #fff;
+  border-color: #d9d9d9;
+  color: rgba(0, 0, 0, 0.85);
+  &:hover {
+    color: #1890ff;
+    border-color: #1890ff;
+    background: #fff;
+  }
+}

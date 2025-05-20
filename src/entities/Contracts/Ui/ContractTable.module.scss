@@ -1,0 +1,138 @@
+.tableContainer {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  overflow: hidden;
+
+  .contractsTable {
+    .ant-table-thead > tr > th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      color: #495057;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    .ant-table-tbody > tr > td {
+      border-bottom: 1px solid #e9ecef;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #f8f9fa !important;
+      }
+    }
+
+    .ant-table-tbody > tr:hover > td {
+      background: transparent;
+    }
+
+    .ant-pagination {
+      margin: 16px 0 0;
+      padding: 0 8px;
+    }
+  }
+
+  .titleColumn {
+    min-width: 180px;
+  }
+
+  .sumColumn {
+    min-width: 120px;
+  }
+
+  .descriptionColumn {
+    max-width: 250px;
+  }
+
+  .statusColumn {
+    min-width: 120px;
+  }
+
+  .dateColumn {
+    min-width: 140px;
+  }
+
+  .sum {
+    font-weight: 500;
+    color: #1890ff;
+  }
+
+  .statusTag {
+    border-radius: 12px;
+    padding: 0 8px;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+}
+.tableContainer {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+  }
+
+  .tableHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .tableTitle {
+    margin: 0;
+    color: #2d3748;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .tableCounter {
+    background: #4299e1;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .contractsTable {
+    .ant-table-thead > tr > th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      color: #495057;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    .ant-table-tbody > tr > td {
+      border-bottom: 1px solid #e9ecef;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #f8f9fa !important;
+      }
+    }
+
+    .ant-table-tbody > tr:hover > td {
+      background: transparent;
+    }
+  }
+
+  .pagination {
+    margin: 16px 0 0;
+    padding: 0 24px 16px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  // ... (остальные стили колонок остаются такими же)
+}

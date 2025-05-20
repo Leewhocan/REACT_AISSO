@@ -1,0 +1,125 @@
+.container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 32px;
+
+  .title {
+    color: #1d1d1d;
+    margin-bottom: 0;
+  }
+
+  .divider {
+    margin: 16px 0 0;
+    border-color: #f0f0f0;
+  }
+}
+
+.filters {
+  margin-bottom: 32px;
+
+  .filterSelect {
+    width: 240px;
+
+    .ant-select-selector {
+      border-radius: 8px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .filterDropdown {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.contractsList {
+  .ant-list-item {
+    padding: 0 !important;
+    margin-bottom: 24px;
+  }
+}
+
+.contractCard {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+  border: none;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  .ant-card-head {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 16px 24px;
+
+    .ant-card-head-title {
+      padding: 0;
+    }
+  }
+
+  .ant-card-body {
+    padding: 24px;
+  }
+}
+
+.cardTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.contractTitle {
+  font-size: 16px;
+  font-weight: 500;
+  flex: 1;
+  margin-right: 16px;
+}
+
+.statusTag {
+  border-radius: 4px;
+  font-weight: 500;
+  padding: 0 8px;
+  margin-left: auto;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cardRow {
+  display: flex;
+  gap: 8px;
+
+  &:not(:last-child) {
+    margin-bottom: 4px;
+  }
+}
+
+.contractSum {
+  color: #1890ff;
+  font-weight: 500;
+}
+
+.contractDescription {
+  color: #595959;
+}
+
+.cardDates {
+  display: flex;
+  gap: 24px;
+  margin-top: 12px;
+
+  .cardRow {
+    flex: 1;
+  }
+}

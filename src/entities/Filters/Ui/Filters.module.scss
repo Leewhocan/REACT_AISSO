@@ -1,0 +1,52 @@
+.box {
+  display: grid;
+  grid-template-columns: auto auto 188px;
+  gap: 24px;
+}
+
+.select:first-child {
+  :global {
+    .ant-select-selector {
+      border-radius: 4px;
+    }
+  }
+}
+
+.treeSelect {
+  :global {
+    .ant-select-selector {
+      border-radius: 4px;
+      font-size: 16px !important; // Увеличенный размер шрифта
+      height: 40px !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    .ant-select-selection-placeholder {
+      color: #70707c;
+      font-size: 16px !important; // Размер плейсхолдера
+      font-weight: 500;
+    }
+
+    .ant-select-selection-item {
+      font-size: 16px !important; // Размер выбранного значения
+      font-weight: 500;
+      color: #333;
+    }
+  }
+}
+.resetFilterBtn {
+  width: 188px;
+  height: 40px;
+  font-family: Inter, sans-serif;
+  color: #4e64f6;
+  font-size: 16px;
+}
+
+.filterLabel {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
