@@ -1,0 +1,14 @@
+* {
+  -webkit-user-select: none; /* Для Safari и Chrome */
+  -moz-user-select: none;    /* Для Firefox */
+  -ms-user-select: none;     /* Для IE/Edge */
+  user-select: none;         /* Стандартное свойство */
+}
+
+/* Разрешаем выделение в input, textarea и contenteditable */
+input, textarea, [contenteditable] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}

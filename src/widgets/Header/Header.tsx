@@ -8,26 +8,29 @@ import {
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router";
 import styles from "./Header.module.scss";
-import { selectUser } from "../../redux/userSlice/userSlice";
+import { selectLanguage, selectUser } from "../../redux/userSlice/userSlice";
 import { useSelector } from "react-redux";
 import { removeToken } from "../../shared/helpers/helper";
+import { LanguageSwitcher } from "shared/LanguageSwitcher";
+import { textes } from "shared/Languages/Language";
 
 const { Header } = Layout;
 
 export const AppHeader: React.FC = () => {
+  const currentLang = useSelector(selectLanguage);
+  const text = textes[currentLang];
   const user = useSelector(selectUser);
   const navigate = useNavigate();
   const handleLogout = () => {
-    // Здесь должна быть логика выхода (например, очистка токена)
     removeToken();
-    navigate("/auth"); // Перенаправляем на страницу входа
+    navigate("/auth");
   };
   const profileItems: MenuProps["items"] = [
     {
       key: "1",
       label: (
         <div className={styles.menuItem}>
-          <Link to="/profile">Профиль</Link>
+          <Link to="/profile">{text.profile}</Link>
         </div>
       ),
     },
@@ -38,7 +41,7 @@ export const AppHeader: React.FC = () => {
       key: "2",
       label: (
         <div onClick={handleLogout} className={styles.menuItem}>
-          <LogoutOutlined /> Выйти
+          <LogoutOutlined /> {text.logout}
         </div>
       ),
     },
@@ -61,10 +64,13 @@ export const AppHeader: React.FC = () => {
               icon={<FileAddOutlined />}
               className={styles.contractButton}
             >
-              Новый контракт
+              {text.newContract}
             </Button>
           </Link>
         )}
+        <div className={styles.language}>
+          <LanguageSwitcher />
+        </div>
 
         <Dropdown menu={{ items: profileItems }} placement="bottomRight">
           <div className={styles.profileTrigger}>

@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import {
   Card,
   Button,
-  Descriptions,
   Modal,
   message,
   Row,
@@ -11,7 +10,7 @@ import {
   Typography,
   Result,
   Space,
-  Tag,
+  Collapse,
 } from "antd";
 import {
   EditOutlined,
@@ -20,6 +19,7 @@ import {
   CloseOutlined,
   ExclamationCircleOutlined,
   DollarCircleFilled,
+  InfoCircleOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router";
 import {
@@ -27,10 +27,10 @@ import {
   useGetByIdQuery,
   useUpdateContractMutation,
 } from "../../entities/Contracts/Services/ContractApi";
-import { ContractEditForm } from "../../widgets/ContractEditForm/ContractEditForm";
-import { country, tnveds } from "../../assets/x";
+import { ContractEditForm } from "widgets/ContractEditForm";
+
 import { useSelector } from "react-redux";
-import { selectUser } from "../../redux/userSlice/userSlice";
+import { selectLanguage, selectUser } from "../../redux/userSlice/userSlice";
 import { OfferModal } from "../../widgets/OfferModal/OfferModal";
 import {
   useCancelAgreementMutation,
@@ -40,21 +40,12 @@ import {
   useSubAgreementMutation,
 } from "../../entities/Agreement/Services/AgreementApi";
 import { ContractList } from "../../widgets/Agreements/Agreement";
+import { IContract } from "shared/libs";
+import { ContractDescription } from "widgets/ContractDescription";
+import { textes } from "shared/Languages/Language";
+import { country, tnveds } from "../../assets/x";
 const { Title, Text } = Typography;
 
-interface Contract {
-  id: number;
-  authorId: number;
-  title: string;
-  sum: number;
-  description: string;
-  tnvedId: string;
-  countryId: string;
-  image: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-}
 interface IcreateAgreementData {
   contractId: number;
   importerId: number;
@@ -69,35 +60,39 @@ interface EditContractForm {
   countryId: string;
   image: string;
 }
-
+const { Panel } = Collapse;
 export const ContractPage: React.FC = () => {
+  const currentLang = useSelector(selectLanguage);
+  const text = textes[currentLang];
   const { id } = useParams();
-  const [createTrigger] = useCreateAgreementMutation();
+  const [createTrigger, { isLoading: isCreateAgreementLoading }] =
+    useCreateAgreementMutation();
   const [deleteTrigger] = useDeleteContractMutation();
   const [update] = useUpdateContractMutation();
   const [getAgreements, { data: agreementsExporter = [] }] =
     useGetByExporterMutation();
   const [getAgreementsOnImporter, { data: agreementsImporter = [] }] =
     useGetByImporterMutation();
-  const [subAgreement] = useSubAgreementMutation();
-  const [cancelAgreement] = useCancelAgreementMutation();
+  const [subAgreement, { isLoading: isSubAgreementLoading }] =
+    useSubAgreementMutation();
+  const [cancelAgreement, { isLoading: isCancelAgreementLoading }] =
+    useCancelAgreementMutation();
   const user = useSelector(selectUser);
   const {
     data: contractData,
     isLoading: isDataLoading,
     isError,
+    refetch,
   } = useGetByIdQuery(id);
-  const [contract, setContract] = useState<Contract | null>(null);
+  const [contract, setContract] = useState<IContract | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isOfferModalVisible, setIsOfferModalVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const onAccept = async (data) => {
-    // console.log(data);
     await subAgreement(data);
   };
   const onReject = async (data) => {
-    // console.log(data);
     cancelAgreement(data);
   };
   const navigate = useNavigate();
@@ -128,6 +123,29 @@ export const ContractPage: React.FC = () => {
       }
     }
   }, [user, contractData]);
+
+  useEffect(() => {
+    if (!isCreateAgreementLoading) {
+      refetch();
+    }
+    if (contractData?.id) {
+      if (user.role === "EXPORTER") {
+        getAgreements({ contractId: contractData.id });
+      }
+      if (user.role === "IMPORTER") {
+        getAgreementsOnImporter({ contractId: contractData.id });
+      }
+    }
+  }, [
+    isCreateAgreementLoading,
+    refetch,
+    isCancelAgreementLoading,
+    isSubAgreementLoading,
+    user.role,
+    getAgreements,
+    getAgreementsOnImporter,
+    isSubAgreementLoading,
+  ]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -177,20 +195,8 @@ export const ContractPage: React.FC = () => {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("ru-RU", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
   const handleOfferSubmit = async (data: IcreateAgreementData) => {
     try {
-      // console.log(data);
       await createTrigger(data);
       navigate(".", { replace: true });
     } catch (error) {
@@ -238,51 +244,53 @@ export const ContractPage: React.FC = () => {
         style={{ marginBottom: "24px" }}
       >
         <Title level={2} style={{ marginBottom: 0 }}>
-          Детали контракта #{contract.id}
+          {text.contractDetails}: {contract.title}
         </Title>
-        {user.role === "IMPORTER" && user.id === contractData.authorId && (
-          <div>
-            {!isEditing ? (
-              <Space>
-                <Button
-                  type="primary"
-                  icon={<EditOutlined />}
-                  onClick={handleEdit}
-                >
-                  Редактировать
-                </Button>
-                <Button
-                  danger
-                  icon={<DeleteOutlined />}
-                  onClick={() => setIsDeleteModalVisible(true)}
-                >
-                  Удалить
-                </Button>
-              </Space>
-            ) : (
-              <Space>
-                <Button
-                  type="primary"
-                  icon={<SaveOutlined />}
-                  onClick={handleSubmit(onSubmit)}
-                  loading={isSubmitting}
-                >
-                  Сохранить
-                </Button>
-                <Button
-                  icon={<CloseOutlined />}
-                  onClick={handleCancelEdit}
-                  disabled={isSubmitting}
-                >
-                  Отмена
-                </Button>
-              </Space>
-            )}
-          </div>
-        )}
+        {user.role === "IMPORTER" &&
+          user.id === contractData.authorId &&
+          contract.status !== "DONE" && (
+            <div>
+              {!isEditing ? (
+                <Space>
+                  <Button
+                    type="primary"
+                    icon={<EditOutlined />}
+                    onClick={handleEdit}
+                  >
+                    {text.edit}
+                  </Button>
+                  <Button
+                    danger
+                    icon={<DeleteOutlined />}
+                    onClick={() => setIsDeleteModalVisible(true)}
+                  >
+                    {text.delete}
+                  </Button>
+                </Space>
+              ) : (
+                <Space>
+                  <Button
+                    type="primary"
+                    icon={<SaveOutlined />}
+                    onClick={handleSubmit(onSubmit)}
+                    loading={isSubmitting}
+                  >
+                    {text.save}
+                  </Button>
+                  <Button
+                    icon={<CloseOutlined />}
+                    onClick={handleCancelEdit}
+                    disabled={isSubmitting}
+                  >
+                    {text.cancel}
+                  </Button>
+                </Space>
+              )}
+            </div>
+          )}
       </Row>
 
-      <Spin spinning={isSubmitting} tip="Сохранение изменений...">
+      <Spin spinning={isSubmitting} tip={text.savingChanges}>
         <Card
           bordered={false}
           style={{
@@ -292,50 +300,7 @@ export const ContractPage: React.FC = () => {
           }}
         >
           {!isEditing ? (
-            <Descriptions
-              bordered
-              column={1}
-              layout="vertical"
-              labelStyle={{ fontWeight: 500 }}
-              contentStyle={{ padding: "12px 24px" }}
-            >
-              <Descriptions.Item label="Название">
-                <Text strong>{contract.title}</Text>
-              </Descriptions.Item>
-              <Descriptions.Item label="Сумма">
-                <Text style={{ color: "#389e0d" }}>
-                  {new Intl.NumberFormat("ru-RU", {
-                    style: "currency",
-                    currency: "RUB",
-                    minimumFractionDigits: 0,
-                  }).format(contract.sum)}
-                </Text>
-              </Descriptions.Item>
-              <Descriptions.Item label="Описание">
-                <Text style={{ whiteSpace: "pre-line" }}>
-                  {contract.description}
-                </Text>
-              </Descriptions.Item>
-              <Descriptions.Item label="Код ТН ВЭД">
-                {tnveds.find((c) => c.value === contract.tnvedId)?.title ||
-                  contract.tnvedId}
-              </Descriptions.Item>
-              <Descriptions.Item label="Страна">
-                {country.find((c) => c.value === contract.countryId)?.title ||
-                  contract.countryId}
-              </Descriptions.Item>
-              <Descriptions.Item label="Статус">
-                <Tag color={contract.status === "INWAIT" ? "orange" : "green"}>
-                  {contract.status === "INWAIT" ? "На рассмотрении" : "Активен"}
-                </Tag>
-              </Descriptions.Item>
-              <Descriptions.Item label="Дата создания">
-                {formatDate(contract.createdAt)}
-              </Descriptions.Item>
-              <Descriptions.Item label="Дата обновления">
-                {formatDate(contract.updatedAt)}
-              </Descriptions.Item>
-            </Descriptions>
+            <ContractDescription contract={contract} />
           ) : (
             <ContractEditForm
               control={control}
@@ -355,7 +320,7 @@ export const ContractPage: React.FC = () => {
             onClick={() => setIsOfferModalVisible(true)}
             style={{ background: "#52c41a", borderColor: "#52c41a" }}
           >
-            Коммерческое предложение
+            {text.commercialOffer}
           </Button>
         </Row>
       )}
@@ -372,36 +337,54 @@ export const ContractPage: React.FC = () => {
             <ExclamationCircleOutlined
               style={{ color: "#ff4d4f", marginRight: 8 }}
             />
-            Подтверждение удаления
+            {text.deleteConfirmation}
           </span>
         }
         visible={isDeleteModalVisible}
         onOk={handleDelete}
         onCancel={() => setIsDeleteModalVisible(false)}
-        okText="Удалить"
-        cancelText="Отмена"
+        okText={text.delete}
+        cancelText={text.cancel}
         confirmLoading={isSubmitting}
         okButtonProps={{ danger: true }}
         centered
       >
         <Text>
-          Вы уверены, что хотите удалить контракт
+          {text.deleteConfirmMessage}
           <Text strong>«{contract.title}»</Text>?
         </Text>
         <Text type="danger" style={{ display: "block", marginTop: 8 }}>
-          Это действие нельзя отменить. Все данные контракта будут безвозвратно
-          удалены.
+          {text.deleteWarning}
         </Text>
       </Modal>
-      {(user.id === contract.authorId || user.role === "EXPORTER") && (
-        <ContractList
-          userRole={user.role}
-          onAccept={onAccept}
-          agreements={agreementsExporter}
-          agreementsImporter={agreementsImporter}
-          onReject={onReject}
-        />
+      {user.role === "EXPORTER" && (
+        <Collapse bordered={false} expandIconPosition="end" ghost>
+          <Panel
+            key="hint"
+            header={
+              <>
+                <InfoCircleOutlined style={{ marginRight: 8 }} />
+                <Text type="secondary">Подскзка по стране</Text>
+              </>
+            }
+          >
+            <Text>
+              {country.find((c) => c.value === contract.countryId)?.desc}
+            </Text>
+          </Panel>
+        </Collapse>
       )}
+
+      {(user.id === contract.authorId || user.role === "EXPORTER") &&
+        !isEditing && (
+          <ContractList
+            userRole={user.role}
+            onAccept={onAccept}
+            agreements={agreementsExporter}
+            agreementsImporter={agreementsImporter}
+            onReject={onReject}
+          />
+        )}
     </div>
   );
 };

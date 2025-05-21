@@ -4,6 +4,7 @@ const initialState = {
     role: "",
     userName: "",
     id: "",
+    lan: "RU",
   },
 };
 const userSlice = createSlice({
@@ -16,10 +17,16 @@ const userSlice = createSlice({
       state.user.userName = action.payload.userName;
       state.user.id = action.payload.id;
     },
+    setLanguage: (state, action) => {
+      state.user.lan = action.payload;
+      localStorage.setItem("lan", action.payload);
+    },
   },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser, setLanguage } = userSlice.actions;
+export const selectLanguage = (state) =>
+  state.user.user.lan || localStorage.getItem("lan");
 export const selectUserRole = (state) => state.user.user.role;
 export const selectUser = (state) => state.user.user;
 export default userSlice.reducer;

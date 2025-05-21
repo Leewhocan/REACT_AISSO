@@ -4,7 +4,10 @@ import { Button, message, Row, Col, Typography, Divider } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 import { useCreateContractMutation } from "../../entities/Contracts/Services/ContractApi";
-import { ContractEditForm } from "../../widgets/ContractEditForm/ContractEditForm";
+import { ContractEditForm } from "widgets/ContractEditForm";
+import { useSelector } from "react-redux";
+import { selectLanguage } from "../../redux/userSlice/userSlice";
+import { textes } from "shared/Languages/Language";
 
 const { Title } = Typography;
 
@@ -14,13 +17,13 @@ interface NewContractForm {
   description: string;
   tnvedId: string;
   countryId: string;
-  image: string;
 }
 
 export const ContractCreatePage: React.FC = () => {
   const [createContract, { isLoading }] = useCreateContractMutation();
   const navigate = useNavigate();
-
+  const currentLang = useSelector(selectLanguage);
+  const text = textes[currentLang];
   const { handleSubmit, control } = useForm<NewContractForm>({
     defaultValues: {
       title: "",
@@ -28,7 +31,6 @@ export const ContractCreatePage: React.FC = () => {
       description: "",
       tnvedId: "",
       countryId: "",
-      image: "", // Пустая строка вместо изображения
     },
   });
 
@@ -51,7 +53,7 @@ export const ContractCreatePage: React.FC = () => {
             level={3}
             style={{ margin: 0, fontSize: 24, color: "#1d1d1d" }}
           >
-            Создание нового контракта
+            {text.createNewContract}
           </Title>
         </Col>
         <Col>
@@ -61,7 +63,7 @@ export const ContractCreatePage: React.FC = () => {
             style={{ paddingLeft: 0 }}
             type="text"
           >
-            Вернуться назад
+            {text.goBack}
           </Button>
         </Col>
       </Row>

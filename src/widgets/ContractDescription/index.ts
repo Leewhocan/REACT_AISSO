@@ -1,0 +1,1 @@
+export { ContractDescription } from "./ContractDescription";

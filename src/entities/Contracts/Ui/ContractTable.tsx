@@ -7,6 +7,8 @@ import { selectFilter } from "../../../redux/filterSlice/filterSlice";
 import { useLazyGetLastContractsQuery } from "../Services/ContractApi";
 import { useNavigate } from "react-router";
 import { country, tnveds } from "../../../assets/x";
+import { selectLanguage } from "../../../redux/userSlice/userSlice";
+import { textes } from "shared/Languages/Language";
 const defaultData = {
   updateImageLastContracts: [],
   meta: {
@@ -32,10 +34,12 @@ interface Contract {
 const statusColors: Record<string, string> = {
   INWAIT: "blue",
   CREATE: "green",
-  COMPLETED: "purple",
+  DONE: "red",
 };
 
 export const LastContractsTable = () => {
+  const currentLang = useSelector(selectLanguage);
+  const text = textes[currentLang];
   const navigate = useNavigate();
   const [data, setData] = useState(defaultData);
   const filter = useSelector(selectFilter);
@@ -51,7 +55,7 @@ export const LastContractsTable = () => {
   }, [tableData]);
   const columns: ColumnsType<Contract> = [
     {
-      title: "Название",
+      title: text.contractName,
       dataIndex: "title",
       key: "title",
       className: styles.titleColumn,
@@ -69,27 +73,39 @@ export const LastContractsTable = () => {
       ),
     },
     {
-      title: "Страна",
+      title: text.country,
       dataIndex: "countryId",
       key: "countryId",
       render: (text, record) => (
         <span>
-          {country.find((c) => c.value === record.countryId)?.title || text}
+          {country.find((c) => c.value === record.countryId)?.[
+            currentLang === "RU"
+              ? "title"
+              : currentLang === "EN"
+              ? "titleEn"
+              : "titleCn"
+          ] || record.countryId}
         </span>
       ),
     },
     {
-      title: "Код",
+      title: text.code,
       dataIndex: "tnvedId",
       key: "tnvedId",
       render: (text, record) => (
         <span>
-          {tnveds.find((c) => c.value === record.tnvedId)?.title || text}
+          {tnveds.find((c) => c.value === record.tnvedId)?.[
+            currentLang === "RU"
+              ? "title"
+              : currentLang === "EN"
+              ? "titleEn"
+              : "titleCn"
+          ] || record.tnvedId}
         </span>
       ),
     },
     {
-      title: "Сумма",
+      title: text.amount,
       dataIndex: "sum",
       key: "sum",
       className: styles.sumColumn,
@@ -104,14 +120,14 @@ export const LastContractsTable = () => {
       ),
     },
     {
-      title: "Описание",
+      title: text.description,
       dataIndex: "description",
       key: "description",
       className: styles.descriptionColumn,
       ellipsis: true,
     },
     {
-      title: "Статус",
+      title: text.status,
       dataIndex: "status",
       key: "status",
       className: styles.statusColumn,
@@ -126,7 +142,7 @@ export const LastContractsTable = () => {
       ),
     },
     {
-      title: "Дата создания",
+      title: text.creationDate,
       dataIndex: "createdAt",
       key: "createdAt",
       className: styles.dateColumn,
@@ -137,8 +153,10 @@ export const LastContractsTable = () => {
   return (
     <div className={styles.tableContainer}>
       <div className={styles.tableHeader}>
-        <h3 className={styles.tableTitle}>Последние контракты</h3>
-        <span className={styles.tableCounter}>Всего: {data.meta.total}</span>
+        <h3 className={styles.tableTitle}>{text.recentContracts}</h3>
+        <span className={styles.tableCounter}>
+          {text.total}: {data.meta.total}
+        </span>
       </div>
       <Table
         columns={columns}

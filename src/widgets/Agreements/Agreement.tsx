@@ -11,6 +11,9 @@ import {
 } from "antd";
 import { CheckOutlined, UndoOutlined } from "@ant-design/icons";
 import styles from "./Agreements.module.scss";
+import { useSelector } from "react-redux";
+import { selectLanguage } from "../../redux/userSlice/userSlice";
+import { textes } from "shared/Languages/Language";
 
 const { Text, Title } = Typography;
 
@@ -20,6 +23,9 @@ interface Agreement {
   importerId: number;
   offerPrice: number;
   contractId: number;
+  exporter: {
+    name: string;
+  };
   status: "CREATED" | "COMPLETED" | "REJECTED" | "CLOSED";
 }
 
@@ -52,13 +58,13 @@ export const ContractList: React.FC<ContractListProps> = ({
   onReject,
   loading = false,
 }) => {
+  const currentLang = useSelector(selectLanguage);
+  const text = textes[currentLang];
   const showSingleAgreement = userRole === "EXPORTER";
   const singleAgreement = showSingleAgreement ? agreements[0] : null;
 
   const getCardTitle = () => {
-    return userRole === "EXPORTER"
-      ? "Мое предложение"
-      : "Предложения на мой контракт";
+    return userRole === "EXPORTER" ? text.myOffer : text.offersForMyContract;
   };
 
   const renderActions = (agreement: Agreement) => {
@@ -69,15 +75,15 @@ export const ContractList: React.FC<ContractListProps> = ({
         {userRole === "IMPORTER" ? (
           <>
             <Popconfirm
-              title="Принять предложение?"
+              title={text.acceptOfferQuestion}
               onConfirm={() =>
                 onAccept?.({
                   contractId: agreement.contractId,
                   id: agreement.id,
                 })
               }
-              okText="Да"
-              cancelText="Нет"
+              okText={text.yes}
+              cancelText={text.no}
             >
               <Button
                 type="primary"
@@ -90,18 +96,18 @@ export const ContractList: React.FC<ContractListProps> = ({
           </>
         ) : (
           <Popconfirm
-            title="Отозвать предложение?"
+            title={text.revokeOfferQuestion}
             onConfirm={() =>
               onReject?.({
                 contractId: agreement.contractId,
                 id: agreement.id,
               })
             }
-            okText="Да"
-            cancelText="Нет"
+            okText={text.yes}
+            cancelText={text.no}
           >
             <Button icon={<UndoOutlined />} className={styles.actionButton}>
-              Отозвать
+              {text.revoke}
             </Button>
           </Popconfirm>
         )}
@@ -113,7 +119,7 @@ export const ContractList: React.FC<ContractListProps> = ({
     <Text strong className={styles.priceText}>
       {new Intl.NumberFormat("ru-RU", {
         style: "currency",
-        currency: "RUB",
+        currency: "USD",
         minimumFractionDigits: 0,
       }).format(price)}
     </Text>
@@ -132,7 +138,7 @@ export const ContractList: React.FC<ContractListProps> = ({
             <div className={styles.agreementInfo}>
               <div className={styles.infoRow}>
                 <Text strong className={styles.label}>
-                  Соглашение:
+                  {text.agreement}
                 </Text>
                 <Text className={styles.value}>
                   #{singleAgreement.contractId}
@@ -140,13 +146,13 @@ export const ContractList: React.FC<ContractListProps> = ({
               </div>
               <div className={styles.infoRow}>
                 <Text strong className={styles.label}>
-                  Сумма:
+                  {text.amount}:
                 </Text>
                 {formatPrice(singleAgreement.offerPrice)}
               </div>
               <div className={styles.infoRow}>
                 <Text strong className={styles.label}>
-                  Статус:
+                  {text.status}:
                 </Text>
                 <Tag
                   color={statusMap[singleAgreement.status].color}
@@ -161,7 +167,7 @@ export const ContractList: React.FC<ContractListProps> = ({
             </div>
           </div>
         ) : (
-          <Empty description="Вы не создавали предложений" />
+          <Empty description={text.noOffersCreated} />
         )}
       </Card>
     );
@@ -169,25 +175,26 @@ export const ContractList: React.FC<ContractListProps> = ({
 
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
+      title: text.receivedFrom,
       width: 80,
+      render: (_: any, record: Agreement) => {
+        return <span>{record?.exporter?.name}</span>;
+      },
     },
     {
-      title: "Контракт",
+      title: text.contract,
       dataIndex: "contractId",
       key: "contractId",
       render: (id: number) => <Text className={styles.contractId}>#{id}</Text>,
     },
     {
-      title: "Сумма",
+      title: text.amount,
       dataIndex: "offerPrice",
       key: "offerPrice",
       render: formatPrice,
     },
     {
-      title: "Статус",
+      title: text.status,
       dataIndex: "status",
       key: "status",
       render: (status: keyof typeof statusMap) => (
@@ -197,7 +204,7 @@ export const ContractList: React.FC<ContractListProps> = ({
       ),
     },
     {
-      title: "Действия",
+      title: text.actions,
       key: "actions",
       render: (_: any, record: Agreement) => renderActions(record),
     },
@@ -215,7 +222,7 @@ export const ContractList: React.FC<ContractListProps> = ({
         rowKey="id"
         loading={loading}
         pagination={{ pageSize: 10 }}
-        locale={{ emptyText: "Нет предложенных контрактов" }}
+        locale={{ emptyText: text.noProposedContracts }}
         className={styles.table}
       />
     </Card>

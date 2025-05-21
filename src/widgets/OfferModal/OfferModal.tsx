@@ -105,7 +105,7 @@ export const OfferModal: React.FC<OfferModalProps> = ({
         >
           <InputNumber
             style={{ width: "100%" }}
-            placeholder="Введите сумму в рублях"
+            placeholder="Введите сумму в долларах"
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, " ")
             }

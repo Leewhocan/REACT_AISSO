@@ -75,6 +75,7 @@ export const AuthForm = () => {
         setToken(result.acseesToken);
         navigate("/home");
       }
+      localStorage.setItem("lan", selectedLanguage);
     } catch (error) {
       console.error("Ошибка:", error);
       showErrorToast(`Ошибка ${error}`, {
